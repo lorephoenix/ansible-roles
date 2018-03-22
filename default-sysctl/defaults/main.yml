@@ -1,0 +1,38 @@
+---
+# Default sysctl.conf location
+sysctl_config_location: /etc/sysctl.d
+
+# IPv6 parameters
+ipv6_all_disable_ipv6: "1"
+ipv6_default_disable_ipv6: "1"
+ipv6_lo_disable_ipv6: "0"
+
+# Performance tweaks
+vm_swappiness: "10"
+vm_overcommit_memory: "1"
+net_ipv4_tcp_fin_timeout: "30"
+net_ipv4_tcp_keepalive_time: "300"
+net_ipv4_tcp_keepalive_probes: "5"
+net_ipv4_tcp_keepalive_intvl: "15"
+net_netfilter_nf_conntrack_max: "65536"
+net_nf_conntrack_max: "65536"
+
+# Security tweaks
+kernel_kptr_restrict: "1"
+kernel_randomize_va_space: "2"
+fs_protected_hardlinks: "1"
+fs_protected_symlinks: "1"
+fs_suid_dumpable: "0"
+net_ipv4_ip_forward: "1"
+net_ipv4_tcp_syncookies: "1"
+net_ipv4_tcp_syn_retries: "2"
+net_ipv4_tcp_synack_retries: "2"
+net_ipv4_tcp_max_syn_backlog: "2048"
+net_ipv4_tcp_rfc1337: "1"
+net_ipv4_conf_all_rp_filter: "1"
+net_ipv6_conf_all_rp_filter: "1"
+net_ipv4_conf_all_send_redirects: "0"
+net_ipv4_conf_all_accept_source_route: "0"
+net_ipv4_conf_all_bootp_relay: "0"
+
+

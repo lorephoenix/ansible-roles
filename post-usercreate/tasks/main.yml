@@ -1,0 +1,60 @@
+---
+- name: Create groups
+  group:
+     name: admin
+     system: yes
+     state: present
+
+- name: group <admin>, validate the sudoers file before saving
+  lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%admin ALL='
+      line: '%admin ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+- name: group <wheel> validate the sudoers file before saving
+  lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%wheel\s'
+      line: '%wheel ALL=(ALL) ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+- include_vars: users.yml
+- name: Add users | create users, shell, home dirs
+  user: 
+    name: "{{ item.username }}"
+    group: "{{ item.group | default('users') }}"
+    groups: "{{ item.groups }}"
+    comment: "{{ item.comment }}"
+    createhome: "{{ item.homedir | default('yes') }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    password: "{{ lookup('password', '/dev/null length=21 chars=ascii_letters,digits,hexdigits,punctuation encrypt=sha256_crypt') }}"
+    system: "{{ item.system | default('no') }}"
+    force: "{{ item.force | default('no') }}"
+    remove: "{{ item.remove | default('no') }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ users }}"
+
+- name: Create hidden SSH directory
+  file:
+      path: "/home/{{ item.username }}/.ssh/"
+      owner: "{{ item.username }}"
+      group: "{{ item.group }}"
+      mode: 0700
+      state: directory
+  with_items: "{{ users }}"
+  when: "(item.state == 'present')"
+
+- name: Set authorized key, exclusive and validated
+  authorized_key:
+      user: "{{ item.username }}"
+      state: "{{ item.state }}"
+      key: "{{ lookup('file', 'sshkeys/public/{{ item.username }}.pub') }}"
+      exclusive: True
+      validate_certs: True
+  with_items: "{{ users }}"
+  when: "(item.state == 'present')"
+ 
+

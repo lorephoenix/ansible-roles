@@ -1,0 +1,44 @@
+---
+- name: Set OS dependent variables
+  include_vars: "{{ item_ssh }}"
+  with_first_found:
+    - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: item_ssh
+  tags: ['package', 'configuration', 'service']
+
+- name: OS is supported
+  assert:
+        that: sshd_os_supported == True
+
+- name: Install ssh packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ sshd_packages }}"
+  tags: package
+
+- name: Copying file issue
+  copy:
+      src: "etc/issue"
+      dest: "/etc/issue"
+      owner: "root"
+      group: "root"
+      mode: 0444
+      force: yes
+
+- name: configure sshd
+  template: >
+    src=etc/ssh/sshd_config.j2
+    dest={{ sshd_config_basedir }}/sshd_config
+    validate="/usr/sbin/sshd -t -f %s"
+  notify: restart sshd
+  tags: configuration
+
+- name: enable sshd
+  service: name={{ sshd_service_name }} state=started enabled=yes
+  tags: service

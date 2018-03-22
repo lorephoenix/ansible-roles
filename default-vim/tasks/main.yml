@@ -1,0 +1,12 @@
+---
+- name: Load OS dependent tasks
+  include_tasks: "{{ item_vim }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: item_vim
+  tags: 
+    - development
+    - vim
+    - vim-install

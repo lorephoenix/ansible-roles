@@ -1,0 +1,22 @@
+---
+- name: Set OS dependent variables
+  include_vars: "{{ item }}"
+  with_first_found:
+   - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+   - "{{ ansible_distribution }}.yml"
+   - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+   - "{{ ansible_os_family }}.yml"
+   - default.yml
+  tags: ['package', 'configuration', 'service']
+
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
+- name: Install tool packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ tools_packages }}"
+  tags: package
+

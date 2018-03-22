@@ -1,0 +1,10 @@
+---
+sshd_packages:
+  - openssh
+  - openssh-server
+sshd_os_supported: yes
+sshd_service_name: sshd
+sshd_config_basedir: /etc/ssh
+sshd_subsystems:
+  - name: sftp
+    path: /usr/libexec/openssh/sftp-server

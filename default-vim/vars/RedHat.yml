@@ -1,0 +1,4 @@
+---
+os_supported: yes
+vim_packages:
+    - vim-enhanced

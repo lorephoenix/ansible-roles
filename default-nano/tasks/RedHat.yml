@@ -1,0 +1,33 @@
+---
+- name: Load OS dependent variables
+  include_vars: "{{ item_vars }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: item_vars
+  tags: 
+    - development
+    - nano
+    - variables
+    - nano-install
+
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
+- name: Install nano package
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ nano_packages }}"
+  tags: package
+
+- name: Copying nanorc into folder 'etc'
+  copy:
+        src: "nanorc.{{ ansible_os_family }}"
+        dest: "/etc/nanorc"
+        owner: root
+        group: root
+        mode: 0444
+        force: yes

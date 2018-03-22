@@ -1,0 +1,44 @@
+---
+os_supported: yes
+repo_packages:
+    - yum-plugin-priorities
+    - epel-release
+    - centos-release-scl-rh
+    - centos-release-scl
+repositories:
+    - name: CentOS-Base
+      priorities:
+        - name: base
+          priority: 1
+        - name: updates
+          priority: 1
+        - name: extras
+          priority: 1
+    - name: epel
+      priorities:
+        - name: epel
+          priority: 5
+        - name: epel-debuginfo
+          priority: 5
+        - name: epel-source
+          priority: 5
+    - name: CentOS-SCLo-scl-rh
+      priorities:
+        - name: centos-sclo-rh
+          priority: 10
+        - name: centos-sclo-rh-testing
+          priority: 10
+        - name: centos-sclo-rh-source
+          priority: 10
+        - name: centos-sclo-rh-debuginfo
+          priority: 10
+    - name: CentOS-SCLo-scl
+      priorities:
+        - name: centos-sclo-sclo
+          priority: 10
+        - name: centos-sclo-sclo-testing
+          priority: 10
+        - name: centos-sclo-sclo-source
+          priority: 10
+        - name: centos-sclo-sclo-debuginfo
+          priority: 10

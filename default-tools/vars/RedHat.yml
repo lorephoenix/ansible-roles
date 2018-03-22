@@ -1,0 +1,30 @@
+---
+os_supported: yes
+tools_packages:
+  - arpwatch
+  - bind-utils
+  - dstat
+  - hdparm
+  - htop
+  - iftop
+  - iotop
+  - iperf3
+  - iptraf-ng
+  - lsof
+  - mlocate
+  - mtr
+  - net-snmp-utils
+  - net-tools
+  - nethogs
+  - nmap
+  - policycoreutils-python
+  - psmisc
+  - screen
+  - sysstat
+  - telnet
+  - tcpdump
+  - traceroute
+  - tmux
+  - vnstat
+  - wget
+

@@ -1,0 +1,12 @@
+users:
+    - username: deployer
+      group: nobody
+      groups: admin
+      comment: "Ansible deploy account"
+      homedir: yes
+      shell: /bin/bash
+      system: yes
+      remove: no
+      force: no
+      state: present
+

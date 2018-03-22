@@ -1,0 +1,31 @@
+---
+- name: Create/update sysctl 10-disableIPv6.conf
+  template: 
+    src:    etc/sysctl.d/10-disableIPv6.conf.j2
+    dest:   "{{ sysctl_config_location }}/10-disableIPv6.conf"
+  notify:
+    - Reload sysctl configuration
+  tags: 
+    - configuration
+    - sysctl_config
+
+- name: Create/update sysctl 10-performance-tweaks.conf
+  template: 
+    src:    etc/sysctl.d/10-performance-tweaks.conf.j2
+    dest:   "{{ sysctl_config_location }}/10-performance-tweaks.conf"
+  notify:
+    - Reload sysctl configuration
+  tags: 
+    - configuration
+    - sysctl_config
+
+- name: Create/update sysctl 10-security-tweaks.conf
+  template: 
+    src:    etc/sysctl.d/10-security-tweaks.conf.j2
+    dest:   "{{ sysctl_config_location }}/10-security-tweaks.conf"
+  notify:
+    - Reload sysctl configuration
+  tags: 
+    - configuration
+    - sysctl_config
+
