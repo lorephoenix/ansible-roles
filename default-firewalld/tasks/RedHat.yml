@@ -1,0 +1,36 @@
+---
+- name: Load OS dependent variables
+  include_vars: "{{ item_vars }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: item_vars
+  tags: ['package', 'configuration', 'service']
+
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
+- name: Install firewalld packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ firewalld_packages }}"
+  tags: package
+
+- name: Change network interface to zone WORK
+  firewalld:
+    zone: work
+    interface: "{{ ansible_default_ipv4.interface }}"
+    permanent: true
+    immediate: yes
+    state: enabled
+
+- name: Remove the service dhcpv6-client
+  firewalld:
+    zone: work
+    service: dhcpv6-client
+    permanent: true
+    immediate: yes
+    state: disabled

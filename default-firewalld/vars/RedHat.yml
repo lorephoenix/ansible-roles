@@ -1,0 +1,4 @@
+---
+os_supported: yes
+firewalld_packages:
+    - firewalld
