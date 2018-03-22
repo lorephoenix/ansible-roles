@@ -1,4 +1,9 @@
 ---
+- name: Change hostname
+  hostname:
+    name: "{{ hostname }}"
+
+
 - name: Generate /etc/hosts file
   template:
     src: etc/hosts.j2
