@@ -1,0 +1,56 @@
+---
+- name: Load OS dependent variables
+  include_vars: "{{ item_vars }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: item_vars
+  tags: ['package', 'configuration', 'service']
+
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
+- name: Stop and disable chrony service
+  service:
+    name:    chronyd
+    enabled: no
+    state:   stopped
+  register: chronyd_service_result
+  failed_when: "chronyd_service_result|failed and 'Could not find the requested service' not in chronyd_service_result.msg"
+  tags: [ 'package' , 'service' ]
+
+- name: Check if service firewalld is running
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+  register: firewalld_status
+  failed_when: "firewalld_status|failed and 'Could not find the requested service' not in firewalld_status.msg"
+  tags: [ 'package' , 'service' ]
+
+- name: Detect the active zone used on firewalld
+  shell: firewall-cmd --get-active-zone |  head -n 1
+  register: firewalld_get_zone
+  when: firewalld_status.state == "started"
+
+- name: Detected active zone used for firewalld
+  debug:
+    msg: "{{ firewalld_get_zone.stdout }}"
+
+- name: Close firewall ports for the service NTP
+  firewalld:
+    zone: "{{ firewalld_get_zone.stdout }}"
+    service: ntp
+    immediate: yes
+    permanent: true
+    state: disabled
+
+- name: Generate ntpd file
+  template:
+    src: etc/sysconfig/ntpd.j2
+    dest: /etc/sysconfig/ntpd
+  when: ntp_enabled
+
+

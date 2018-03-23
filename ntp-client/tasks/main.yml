@@ -1,0 +1,41 @@
+---
+- name: Load OS dependent tasks
+  include_tasks: "{{ item_ntp }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: item_ntp
+  tags: ['package', 'configuration', 'service']
+
+- name: Install NTP packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ntp_packages }}"
+  tags: package
+
+- name: Set timezone
+  timezone:
+    name: "{{ ntp_timezone }}"
+
+- name: Ensure NTP is running and enabled as configured.
+  service:
+    name: "{{ ntp_daemon }}"
+    state: started
+    enabled: yes
+  when: ntp_enabled
+
+- name: Ensure NTP is stopped and disabled as configured.
+  service:
+    name: "{{ ntp_daemon }}"
+    state: stopped
+    enabled: no
+  when: not ntp_enabled
+
+- name: Generate ntp.conf file
+  template:
+    src: etc/ntp.conf.j2
+    dest: /etc/ntp.conf
+  notify: restart ntp
+  when: ntp_enabled
