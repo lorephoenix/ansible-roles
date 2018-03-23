@@ -1,0 +1,6 @@
+---
+ntp_daemon: ntpd
+ntpd_panicgate: true
+ntpd_ipv4: true
+ntpd_slew: true
+os_supported: yes
