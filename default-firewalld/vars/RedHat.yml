@@ -1,4 +1,9 @@
 ---
+deletion_list:
+    - "/etc/firewalld"
+    - "/usr/lib/firewalld"
+    - "/var/log/firewalld"
+firewalld_service_name: firewalld
 os_supported: yes
-firewalld_packages:
+packages:
     - firewalld

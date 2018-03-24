@@ -1,0 +1,13 @@
+---
+- name: Uninstall - Uninstall the firewall packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove firewall configuration files and libraries
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ deletion_list }}"

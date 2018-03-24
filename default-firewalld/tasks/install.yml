@@ -1,0 +1,27 @@
+---
+- name: Install - Ensure that firewall daemon packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Enable firewalld
+  service: name={{ firewalld_service_name }} state=started enabled=yes
+  tags: [ 'service ']
+
+- name: Change network interface to zone ...
+  firewalld:
+    zone: "{{ fw_default_zone }}"
+    interface: "{{ ansible_default_ipv4.interface }}"
+    permanent: true
+    immediate: yes
+    state: enabled
+
+- name: Remove the service dhcpv6-client
+  firewalld:
+    zone: "{{ fw_default_zone }}"
+    service: dhcpv6-client
+    permanent: true
+    immediate: yes
+    state: disabled
