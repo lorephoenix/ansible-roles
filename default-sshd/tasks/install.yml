@@ -1,0 +1,29 @@
+---
+- name: Install - Ensure that SSH server packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Copying file issue
+  copy:
+      src: "etc/issue"
+      dest: "/etc/issue"
+      owner: "root"
+      group: "root"
+      mode: 0444
+      force: yes
+
+- name: Configure sshd_config
+  template: >
+    src=etc/ssh/sshd_config.j2
+    dest={{ sshd_config_basedir }}/sshd_config
+    validate="/usr/sbin/sshd -t -f %s"
+  notify: restart sshd
+  tags: [ 'configuration' ]
+
+- name: enable sshd
+  service: name={{ sshd_service_name }} state=started enabled=yes
+  tags: [ 'service ']
+

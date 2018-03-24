@@ -1,5 +1,5 @@
 ---
-sshd_packages:
+packages:
   - openssh
   - openssh-server
 sshd_os_supported: yes
