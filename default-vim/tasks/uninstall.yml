@@ -1,0 +1,22 @@
+---
+- name: Uninstall - Uninstall vim-enhanced package
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove file vimrc
+  file:
+    path: /etc/vimrc
+    force: yes
+    state: absent
+
+- name: Unset an alias for vim-enhanced
+  lineinfile:
+      path: /etc/profile
+      state: absent
+      regexp: '^alias vi="vim"$'
+      line: 'alias vi="vim"'
+  when: ansible_os_family == "RedHat"
+

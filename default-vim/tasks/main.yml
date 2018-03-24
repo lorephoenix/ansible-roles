@@ -1,12 +1,26 @@
----
-- name: Load OS dependent tasks
-  include_tasks: "{{ item_vim }}"
+---                                                                                                                                                          
+- name: Load OS dependent variables
+  include_vars: "{{ item_vars }}"
   with_first_found:
+    - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_os_family }}.yml"
     - default.yml
   loop_control:
-    loop_var: item_vim
-  tags: 
-    - development
-    - vim
-    - vim-install
+    loop_var: item_vars
+  tags: ['package', 'configuration', 'vim-install']
+
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
+- name: Install vim-enhanced package
+  include_tasks: install.yml
+  when: state|default('present') == 'present'
+  tags: ['package', 'installation' ]
+
+- name: Uninstall vim-enhanced package
+  include_tasks: uninstall.yml
+  when: state|default('present') == 'absent'
+  tags: ['package', 'deinstallation' ]
