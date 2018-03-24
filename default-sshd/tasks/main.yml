@@ -20,3 +20,8 @@
   when: state|default('present') == 'present'
   tags: ['package', 'installation' ]
 
+- name: Uninstall SSH packages
+  include_tasks: uninstall.yml
+  when: state|default('present') == 'absent'
+  tags: ['package', 'deinstallation' ]
+

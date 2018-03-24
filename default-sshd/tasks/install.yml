@@ -9,7 +9,7 @@
 - name: Copying file issue
   copy:
       src: "etc/issue"
-      dest: "/etc/issue"
+      dest: "{{ sshd_banner }}"
       owner: "root"
       group: "root"
       mode: 0444
@@ -23,7 +23,7 @@
   notify: restart sshd
   tags: [ 'configuration' ]
 
-- name: enable sshd
+- name: Enable sshd
   service: name={{ sshd_service_name }} state=started enabled=yes
   tags: [ 'service ']
 

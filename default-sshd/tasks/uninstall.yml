@@ -1,0 +1,15 @@
+---
+- name: Remove issue file
+  file:
+    path: "{{ sshd_banner }}"
+    state: absent
+
+- name: Copying default sshd_config
+  copy:
+      src: "etc/ssh/sshd_config"
+      dest: "{{ sshd_config_basedir }}/sshd_config"
+      owner: "root"
+      group: "root"
+      mode: 0600
+      force: yes
+
