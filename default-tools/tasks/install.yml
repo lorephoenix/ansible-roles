@@ -1,0 +1,7 @@
+---
+- name:  Install - Ensure that required tool packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]

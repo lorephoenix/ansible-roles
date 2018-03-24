@@ -14,9 +14,11 @@
         that: os_supported == True
 
 - name: Install tool packages
-  package:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ tools_packages }}"
-  tags: package
+  include_tasks: install.yml
+  when: state|default('present') == 'present'
+  tags: ['package', 'installation' ]
 
+- name: Uninstall tool packages
+  include_tasks: uninstall.yml
+  when: state|default('present') == 'absent'
+  tags: ['package', 'deinstallation' ]

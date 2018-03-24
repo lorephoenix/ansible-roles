@@ -1,0 +1,8 @@
+---
+- name: Uninstall - Uninstall tool packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
