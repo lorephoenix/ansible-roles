@@ -1,0 +1,22 @@
+---
+- name: Remove colors.sh
+  file:
+    path: "{{ profile_path }}/colors.sh"
+    state: absent
+
+- name: Remove the Message of The Day file
+  file:
+    path: "{{ motd_path_file }}"
+    state: absent
+
+- name: Remove motd.sh (skel)  as well as surrounding markers
+  blockinfile:
+    path: "/etc/skel/.bash_profile"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: ""
+
+- name: Remove motd.sh (root)  as well as surrounding markers
+  blockinfile:
+    path: "/root/.bash_profile"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    content: ""

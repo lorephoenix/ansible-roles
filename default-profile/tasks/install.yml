@@ -1,0 +1,37 @@
+---
+- name: Copying colors.sh
+  copy:
+        src: "etc/profile.d/colors.sh"
+        dest: "{{ profile_path }}/colors.sh"
+        owner: root
+        group: root
+        mode: 0644 
+        force: yes
+
+- name: Copying the Message of The Day file
+  copy:
+        src: "etc/motd.{{ ansible_distribution }}"
+        dest: "{{ motd_path_file }}"
+        owner: root
+        group: root
+        mode: 0555 
+        force: yes
+
+- name: Append motd.sh into BASH profile of root
+  blockinfile:
+    path: /root/.bash_profile
+    block: |
+        # Display Message of the Day
+        if [ -f {{ motd_path_file }} ]; then
+        {{ motd_path_file }}
+        fi
+
+- name: Append motd.sh into global BASH profile (skel)
+  blockinfile:
+    path: /etc/skel/.bash_profile
+    block: |
+        # Display Message of the Day
+        if [ -f {{ motd_path_file }} ]; then
+        {{ motd_path_file }}
+        fi 
+
