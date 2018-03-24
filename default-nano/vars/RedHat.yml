@@ -1,4 +1,4 @@
 ---
 os_supported: yes
-nano_packages:
+packages:
     - nano

@@ -1,0 +1,16 @@
+---
+- name: Install - Ensure that the nano package is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Copying nanorc
+  copy:
+        src: "etc/nanorc"
+        dest: "/etc/nanorc"
+        owner: root
+        group: root
+        mode: 0444
+        force: yes

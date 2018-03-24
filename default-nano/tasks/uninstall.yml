@@ -1,0 +1,13 @@
+---
+- name: Uninstall - Uninstall nano package
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove file nanorc
+  file:
+    path: /etc/nanorc
+    force: yes
+    state: absent
