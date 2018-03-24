@@ -1,0 +1,13 @@
+---
+- name: Change hostname
+  hostname:
+    name: "dummy"
+
+- name: Copying original hosts file
+  copy:
+    src: "etc/hosts"
+    dest: "/etc/hosts"
+    owner: root
+    group: root
+    mode: 0644
+    force: yes

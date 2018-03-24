@@ -1,11 +1,10 @@
 ---
-- name: Change hostname
-  hostname:
-    name: "{{ hostname }}"
+- name: Setup hosts & hostname
+  include_tasks: install.yml
+  when: state|default('present') == 'present'
+  tags: ['package', 'installation' ]
 
-
-- name: Generate /etc/hosts file
-  template:
-    src: etc/hosts.j2
-    dest: /etc/hosts
-
+- name: Unset hosts
+  include_tasks: uninstall.yml
+  when: state|default('present') == 'absent'
+  tags: ['package', 'deinstallation' ]
