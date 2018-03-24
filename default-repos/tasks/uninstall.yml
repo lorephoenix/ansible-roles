@@ -1,0 +1,20 @@
+---
+- name: Uninstall - Uninstall the repo packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Delete file glob 
+  find:
+    path: "{{ repo_path }}"
+    pattern: "*.rpmsave"
+  register: files_to_delete
+
+- name: Uninstall - Remove file glob
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+

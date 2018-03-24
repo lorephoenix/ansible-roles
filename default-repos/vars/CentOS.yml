@@ -1,10 +1,11 @@
 ---
 os_supported: yes
-repo_packages:
+packages:
     - yum-plugin-priorities
     - epel-release
     - centos-release-scl-rh
     - centos-release-scl
+repo_path: /etc/yum.repos.d
 repositories:
     - name: CentOS-Base
       priorities:

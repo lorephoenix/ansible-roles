@@ -1,0 +1,26 @@
+---
+- name: Install - Ensure that repo packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: "Enable plugin"
+  ini_file: dest=/etc/yum/pluginconf.d/priorities.conf section=main option=enabled value=1
+  when: ansible_os_family == "RedHat"
+
+- name: "Merge repo priority data"
+  set_fact: repositories="{{ repositories + additional_repos }}"
+  when: additional_repos is defined
+
+- name: "Set repository priorities"
+  ini_file:
+    dest: "/etc/yum.repos.d/{{ item.0.name }}.repo"
+    section: "{{ item.1.name }}"
+    option: priority
+    value: "{{ item.1.priority }}"
+  with_subelements:
+    - "{{ repositories }}"
+    - priorities
+  when: ansible_os_family == "RedHat"
