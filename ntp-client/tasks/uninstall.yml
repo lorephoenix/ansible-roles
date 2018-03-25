@@ -1,0 +1,14 @@
+---
+- name: Uninstall - Uninstall the NTP packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ ntp_packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove NTP configuration files and logfiles
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ delete_ntp_files }}"
+

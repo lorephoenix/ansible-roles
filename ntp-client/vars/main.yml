@@ -1,5 +1,0 @@
----
-ntp_packages:
-    - ntp
-    - tzdata
-
