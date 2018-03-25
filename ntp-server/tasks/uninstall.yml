@@ -1,0 +1,44 @@
+---
+- name: Uninstall - Uninstall the NTP packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ ntp_packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove NTP configuration files and logfiles
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ delete_ntp_files }}"
+
+- name: Check if service firewalld is running
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+  register: firewalld_status
+  failed_when: "firewalld_status|failed and 'Could not find the requested service' not in firewalld_status.msg"
+  when: ansible_os_family == "RedHat"
+  tags: [ 'package' , 'service' ]
+
+- name: Detect the active zone used on firewalld
+  shell: firewall-cmd --get-active-zone |  head -n 1
+  register: firewalld_get_zone
+  when: firewalld_status.state == "started" and ansible_os_family == "RedHat"
+
+- name: Detected active zone used for firewalld
+  debug:
+    msg: "{{ firewalld_get_zone.stdout }}"
+  when: ansible_os_family == "RedHat"
+
+- name: Close firewall ports for the service NTP
+  firewalld:
+    zone: "{{ firewalld_get_zone.stdout }}"
+    service: ntp
+    immediate: yes
+    permanent: true
+    state: disabled
+  when: ansible_os_family == "RedHat"
+
+

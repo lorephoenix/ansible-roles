@@ -1,5 +1,5 @@
 ---
-ntp_enabled: true
+ntp_enabled: yes
 ntp_timezone: Europe/Brussels
 
 # NTP server area configuration (leave empty for 'Worldwide').

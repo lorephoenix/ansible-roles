@@ -1,4 +1,19 @@
 ---
+chrony_packages:
+    - chrony
+delete_chrony_files:
+    - /var/log/chrony
+    - /etc/chrony.conf.rpmsave
+    - /etc/sysconfig/chronyd.rpmsave
+delete_ntp_files:
+    - /etc/ntp
+    - /etc/ntp.conf.rpmsave
+    - /etc/sysconfig/ntpd.rpmsave
+    - /var/log/ntpd.log 
+    - /var/log/ntpstats
+ntp_packages:
+    - ntp
+    - tzdata
 ntp_daemon: ntpd
 ntpd_panicgate: true
 ntpd_ipv4: true

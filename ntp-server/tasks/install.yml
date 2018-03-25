@@ -1,0 +1,89 @@
+---
+- name: Uninstall - Ensure that chronyd isn't installed.
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ chrony_packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove chrony configuration and log files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ delete_chrony_files }}"
+
+- name: Install - Ensure that NTP packages are installed.
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ntp_packages }}"
+  tags: [ 'package' ]
+
+- name: Ensure NTP is running and enabled as configured.
+  service: 
+    name: "{{ ntp_daemon }}"
+    state: started
+    enabled: yes
+  when: ntp_enabled | bool
+  tags: [ 'service ']
+
+- name: Ensure NTP is stopped and disabled as configured.
+  service:
+    name: "{{ ntp_daemon }}"
+    state: stopped
+    enabled: no
+  when: not ntp_enabled | bool
+
+- name: Generate ntp.conf file
+  template:
+    src: etc/ntp.conf.j2
+    dest: /etc/ntp.conf
+  notify: restart ntp
+  with_items: "{{ ntp_allow }}"
+  when: ntp_enabled | bool
+
+- name: Check if service firewalld is running
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+  register: firewalld_status
+  failed_when: "firewalld_status|failed and 'Could not find the requested service' not in firewalld_status.msg"
+  when: ansible_os_family == "RedHat"
+  tags: [ 'package' , 'service' ]
+
+- name: Detect the active zone used on firewalld
+  shell: firewall-cmd --get-active-zone |  head -n 1
+  register: firewalld_get_zone
+  when: firewalld_status.state == "started" and ansible_os_family == "RedHat"
+
+- name: Detected active zone used for firewalld
+  debug:
+    msg: "{{ firewalld_get_zone.stdout }}"
+  when: ansible_os_family == "RedHat"
+
+- name: Open firewall ports for the service NTP
+  firewalld:
+    zone: "{{ firewalld_get_zone.stdout }}"
+    service: ntp
+    immediate: yes
+    permanent: true
+    state: enabled
+  when: ntp_enabled | bool and ansible_os_family == "RedHat"
+
+- name: Close firewall ports for the service NTP
+  firewalld:
+    zone: "{{ firewalld_get_zone.stdout }}"
+    service: ntp
+    immediate: yes
+    permanent: true
+    state: disabled
+  when: not ntp_enabled | bool and ansible_os_family == "RedHat"
+
+- name: Generate ntpd file
+  template:
+    src: etc/sysconfig/ntpd.j2
+    dest: /etc/sysconfig/ntpd
+  when: ntp_enabled | bool and ansible_os_family == "RedHat"
+
+
