@@ -1,0 +1,15 @@
+---
+os_supported: yes
+packages:
+    - python36u
+    - python36u-pip
+    - python36u-tools
+    - python36u-devel
+    - ius-release
+delete_ius_files:
+    - /var/cache/yum/x86_64/7/ius
+    - /var/lib/yum/repos/x86_64/7/ius
+    - /etc/yum.repos.d/ius.repo.rpmnew
+    - /etc/yum.repos.d/ius.repo.rpmsave
+    - /usr/local/bin/python3
+    - /usr/local/bin/pip3

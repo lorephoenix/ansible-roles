@@ -1,0 +1,14 @@
+---
+- name: Uninstall - Uninstall the IUS Python3 packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ packages }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove IUS repo and directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: "{{ delete_ius_files }}"
+
