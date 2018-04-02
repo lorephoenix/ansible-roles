@@ -1,0 +1,18 @@
+---
+os_supported: yes
+selinux_packages:
+    - libselinux
+    - libselinux-python
+    - libselinux-utils
+    - selinux-policy
+    - selinux-policy-targeted
+    - policycoreutils
+    - policycoreutils-python
+    - policycoreutils-restorecond
+    - libsemanage
+    - libsemanage-python
+    - setools-libs
+    - setools
+    - setools-console
+    
+

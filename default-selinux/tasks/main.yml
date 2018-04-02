@@ -1,0 +1,26 @@
+- name: Set OS dependent variables
+  include_vars: "{{ items }}"
+  with_first_found:
+    - "{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family }}.yml"
+    - default.yml
+  loop_control:
+    loop_var: items
+  tags: ['package', 'configuration', 'service']
+
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
+- name: Install SELinux packages
+  include_tasks: install.yml
+  when: state|default('present') == 'present' and ansible_os_family == "RedHat"
+  tags: ['package', 'installation' ]
+
+- name: Uninstall SELinux packages
+  include_tasks: uninstall.yml
+  when: state|default('present') == 'absent' and ansible_os_family == "RedHat"
+  tags: ['package', 'deinstallation' ]
+
