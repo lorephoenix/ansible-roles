@@ -1,0 +1,42 @@
+---
+- name: Install - Ensure that lldpad package is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ package }}"
+  tags: [ 'package' ]
+
+- name: Ensure LLDpad is running and enabled as configured.
+  service: 
+    name: "{{ lldp_daemon }}"
+    state: started
+    enabled: yes
+  when: lldp_enabled | bool
+  tags: [ 'service ']
+
+- name: Ensure LLDpad is stopped and disabled as configured.
+  service: 
+    name: "{{ lldp_daemon }}"
+    state: stopped
+    enabled: no
+  when: not lldp_enabled | bool
+  tags: [ 'service ']
+
+- name: Generate a lldpad bash script
+  template:
+    src: "opt/lldpad.sh.j2"
+    dest: "{{ lldp_path_file }}"
+    owner: root
+    group: root
+    mode: 0500
+    force: yes
+
+- name: Generate a lldpad cronjob
+  template:
+    src: "etc/cron.d/lldpad.j2"
+    dest: "/etc/cron.d/lldpad"
+    owner: root
+    group: root
+    mode: 0600
+    force: yes
+  when: lldp_enabled | bool

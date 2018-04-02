@@ -1,0 +1,3 @@
+---
+lldp_enabled: yes
+lldp_path_file: /opt/lldpad.sh

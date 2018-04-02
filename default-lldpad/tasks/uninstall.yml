@@ -1,0 +1,17 @@
+---
+- name: Uninstall - Uninstall the LLDpad packages
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ package }}"
+  tags: [ 'package' ]
+
+- name: Uninstall - Remove LLDpad cron job
+  file:
+    path: "/etc/cron.d/lldpad"
+    state: absent
+
+- name: Uninstall - Remove LLDpad bash script
+  file:
+    path: "{{ lldp_path_file }}"
+    state: absent

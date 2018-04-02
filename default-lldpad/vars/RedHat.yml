@@ -1,0 +1,4 @@
+---
+lldp_daemon: lldpad
+package:
+    - lldpad
