@@ -8,6 +8,10 @@
     loop_var: item_vars
   tags: ['package', 'configuration', 'service']
 
+- name: OS is supported
+  assert:
+        that: os_supported == True
+
 - name: Install LLDpad service
   include_tasks: install.yml
   tags: ['package', 'installation', 'service']
