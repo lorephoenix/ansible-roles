@@ -18,9 +18,3 @@
   include_tasks: install.yml
   when: state|default('present') == 'present' and ansible_os_family == "RedHat"
   tags: ['package', 'installation' ]
-
-- name: Uninstall SELinux packages
-  include_tasks: uninstall.yml
-  when: state|default('present') == 'absent' and ansible_os_family == "RedHat"
-  tags: ['package', 'deinstallation' ]
-
